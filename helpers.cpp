@@ -1,4 +1,4 @@
-#include "bullet.hpp"
+#include "helpers.hpp"
 
 
 // Given the number of bullets, initialize a vector of bullet structures

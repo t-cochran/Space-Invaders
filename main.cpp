@@ -12,69 +12,61 @@
 #define RIGHTMAX    470
 #define TOPMAX      -1000.0f
 #define BULLETSPEED 15.0f
-#define MAXAMMO     1000
+#define MAXAMMO     10
 #define VOLUME      10
 
 sf::Vector2f globalShipPos;
 
 int main(int argc, char* argv[])
 {
-    // RenderWindow class allows sprites to be added
+    /* Set game window size and framerate */
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Game");
     window.setFramerateLimit(100);
 
-    /* Create textures*/
-    sf::Texture shipTexture;
-    sf::Texture spaceTexture;
+    /* Load textures*/
+    sf::Texture shipTexture, spaceTexture, bulletTexture, alienTexture;
     shipTexture.loadFromFile("Textures/ship.png");
     spaceTexture.loadFromFile("Textures/spacebg.jpg");
+    bulletTexture.loadFromFile("Textures/bullet2.png");
+    alienTexture.loadFromFile("Textures/alien.png");
 
-    /* Background sprite */
-    sf::Sprite background(spaceTexture);
-
-    /* Ammo count font */
-    sf::Font font;  // load font
-    font.loadFromFile("Fonts/arial.ttf");
-    sf::Text text;  // draw text
-    text.setFont(font);
-    text.setScale(sf::Vector2f(0.75, 0.75));
-    text.setCharacterSize(50);  // font size in pixels
-
-    /* Ship Sprite */
-    sf::Sprite ship(shipTexture);
+    /* Load sprites */
+    sf::Sprite background(spaceTexture), ship(shipTexture), bullet, alien;
     ship.scale(sf::Vector2f(0.1f, .1f));
     ship.setOrigin(sf::Vector2f(-4500.f, -9300.f));
 
-    /* Bullet Sprite */
-    sf::Sprite bullet;
-    sf::Texture bulletTexture;
-    bulletTexture.loadFromFile("Textures/bullet2.png");
-    std::vector<sf::Sprite> ammo;
-    std::vector<sf::Sprite> reload;
-    initAmmo(MAXAMMO, &ammo, &bulletTexture);
+    /* Load sounds */
+    sf::Sound shot, outOfAmmo;
+    sf::SoundBuffer laserBuf, clickBuf;
+    laserBuf.loadFromFile("Sounds/laser.wav");
+    clickBuf.loadFromFile("Sounds/click.wav");
+    outOfAmmo.setBuffer(clickBuf);
+    shot.setBuffer(laserBuf);
+    shot.setVolume(VOLUME);
+    outOfAmmo.setVolume(VOLUME);
 
-    /* Alien Sprite */
-    sf::Sprite alien;
-    sf::Texture alienTexture;
-    alienTexture.loadFromFile("Textures/alien.png");
-    std::vector<sf::Sprite> aliens;
+    /* Initialize ammo and aliens vectors */
+    std::vector<sf::Sprite> ammo, reload, aliens;
+    initAmmo(MAXAMMO, &ammo, &bulletTexture);
     initAliens(4, &aliens, &alienTexture);
+
+    /* Load fonts */
+    sf::Font arial;
+    arial.loadFromFile("Fonts/arial.ttf");
+
+    /* Load texts */
+    sf::Text text; 
+    text.setFont(arial);
+    text.setScale(sf::Vector2f(0.75, 0.75));
+    text.setCharacterSize(50);
+
+    /* Bools to control alien movement */
     bool goLeft = true, goRight = false;
 
-    /* Create sound buffers */
-    sf::SoundBuffer buffer1, buffer2;
-    sf::Sound shot, outOfAmmo;
-    buffer1.loadFromFile("Sounds/laser.wav");
-    buffer2.loadFromFile("Sounds/click.wav");
-    shot.setBuffer(buffer1);
-    outOfAmmo.setBuffer(buffer2);
-    outOfAmmo.setVolume(VOLUME);
-    shot.setVolume(VOLUME);
-    
-    /* Start a game clock */
+    /* Initialize game clock */
     sf::Clock clock;
 
-    /* Game Loop */
+    /* Main game loop */
     while (window.isOpen())
     {
         /* Event Loop --------------------------------------------------------------------------- */

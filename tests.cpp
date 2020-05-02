@@ -4,7 +4,7 @@
 #include <vector>    // vector class
 #include <array>     // array class
 
-#include "bullet.hpp"
+#include "helpers.hpp"
 
 /* 
  *  '::' scope resolution operator
