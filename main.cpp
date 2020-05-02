@@ -26,15 +26,15 @@ int main(int argc, char* argv[])
     /* Create textures*/
     sf::Texture shipTexture;
     sf::Texture spaceTexture;
-    shipTexture.loadFromFile("ship.png");
-    spaceTexture.loadFromFile("spacebg.jpg");
+    shipTexture.loadFromFile("Textures/ship.png");
+    spaceTexture.loadFromFile("Textures/spacebg.jpg");
 
     /* Background sprite */
     sf::Sprite background(spaceTexture);
 
     /* Ammo count font */
     sf::Font font;  // load font
-    font.loadFromFile("arial.ttf");
+    font.loadFromFile("Fonts/arial.ttf");
     sf::Text text;  // draw text
     text.setFont(font);
     text.setScale(sf::Vector2f(0.75, 0.75));
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     /* Bullet Sprite */
     sf::Sprite bullet;
     sf::Texture bulletTexture;
-    bulletTexture.loadFromFile("bullet2.png");
+    bulletTexture.loadFromFile("Textures/bullet2.png");
     std::vector<sf::Sprite> ammo;
     std::vector<sf::Sprite> reload;
     initAmmo(MAXAMMO, &ammo, &bulletTexture);
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
     /* Alien Sprite */
     sf::Sprite alien;
     sf::Texture alienTexture;
-    alienTexture.loadFromFile("alien.png");
+    alienTexture.loadFromFile("Textures/alien.png");
     std::vector<sf::Sprite> aliens;
     initAliens(4, &aliens, &alienTexture);
     bool goLeft = true, goRight = false;
@@ -64,8 +64,8 @@ int main(int argc, char* argv[])
     /* Create sound buffers */
     sf::SoundBuffer buffer1, buffer2;
     sf::Sound shot, outOfAmmo;
-    buffer1.loadFromFile("laser_4.wav");
-    buffer2.loadFromFile("empty_click.wav");
+    buffer1.loadFromFile("Sounds/laser.wav");
+    buffer2.loadFromFile("Sounds/click.wav");
     shot.setBuffer(buffer1);
     outOfAmmo.setBuffer(buffer2);
     outOfAmmo.setVolume(VOLUME);
