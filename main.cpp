@@ -15,8 +15,6 @@
 #define MAXAMMO     50
 #define VOLUME      10
 
-sf::Vector2f globalShipPos;
-
 int main(int argc, char* argv[])
 {
     /* Set game window size and framerate */
@@ -64,10 +62,7 @@ int main(int argc, char* argv[])
     /* Bools to control alien movement */
     bool goLeft = true, goRight = false;
 
-    /* Track the ship's current location */
-    sf::Vector2f shipPos;
-
-    /* Running total ammo */
+    /* Track running total ammo */
     int ammoRemain = MAXAMMO;
 
     /* Initialize game clock */
@@ -124,22 +119,20 @@ int main(int argc, char* argv[])
         /* Game Frames -------------------------------------------------------------------------- */
         window.clear();
 
-        /* Draw the background and ship */
+        /* Draw the background, ship, and aliens */
         window.draw(background);
         window.draw(ship);
-
-        /* Draw the alien */
         window.draw(alien);
         
         /* Update ammo text */
         std::string textString;
         text.setFillColor(ammoRemain > 0 ? sf::Color::Cyan : sf::Color::Red);
-        if (ammoRemain > 0) // Print current ammo left
-        {
+        if (ammoRemain > 0)
+        {   // Print current ammo left
             textString = "Ammo: " + std::to_string(ammoRemain);
         }
-        else // Print out of ammo
-        {
+        else
+        {   // Print out of ammo
             if ((int)std::round(clock.getElapsedTime().asMilliseconds()) % 2 == 0) 
             {
                 text.setFillColor(sf::Color::Transparent);
@@ -166,8 +159,8 @@ int main(int argc, char* argv[])
                     window.draw(*it);  // Draw the aliens at the current position
                 }
             }
-            else // Left boundary reached: move aliens right
-            {
+            else 
+            {   // Left boundary reached: move aliens right
                 goRight = true;
                 goLeft = false;
             }
@@ -182,15 +175,12 @@ int main(int argc, char* argv[])
                     window.draw(*it);  // Draw the aliens at the current position
                 }
             }
-            else // Right boundary reached: move aliens left
-            {
+            else 
+            {   // Right boundary reached: move aliens left
                 goLeft = true;
                 goRight = false;
             }
         }
-
-        std::cout << "ammo: " << ammo.size() << std::endl;
-        std::cout << "reload: " << reload.size() << std::endl; 
 
         /* Update bullet position */
         for (std::deque<sf::Sprite>::iterator it = reload.begin(); it != reload.end(); it++) 
@@ -209,16 +199,15 @@ int main(int argc, char* argv[])
         }
 
         /* Move the ship left */
-        shipPos = ship.getPosition();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && shipPos.x > LEFTMAX) 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && ship.getPosition().x > LEFTMAX) 
         {
-            ship.setPosition(shipPos.x - 5.0f, 0.0f);
+            ship.setPosition(ship.getPosition().x - 5.0f, 0.0f);
         }
 
         /* Move the ship right */
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && shipPos.x < RIGHTMAX) 
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && ship.getPosition().x < RIGHTMAX) 
         {
-            ship.setPosition(shipPos.x + 5.0f, 0.0f);
+            ship.setPosition(ship.getPosition().x + 5.0f, 0.0f);
         }
 
         /* Display the frame */
