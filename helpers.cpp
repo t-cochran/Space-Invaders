@@ -2,7 +2,7 @@
 
 
 // Given the number of bullets, initialize a vector of bullet structures
-void initAmmo(int numBullets, std::vector<sf::Sprite>* bulletVector, sf::Texture* bulletTexture) {
+void initAmmo(int numBullets, std::deque<sf::Sprite>* bulletVector, sf::Texture* bulletTexture) {
 
     /* Fill the bullet vector with bullets */
     for (int i=0; i < numBullets; i++) 
@@ -17,7 +17,7 @@ void initAmmo(int numBullets, std::vector<sf::Sprite>* bulletVector, sf::Texture
     }
 }
 
-void initAliens(int numAliens, std::vector<sf::Sprite>* alienVector, sf::Texture* alienTexture) {
+void initAliens(int numAliens, std::deque<sf::Sprite>* alienVector, sf::Texture* alienTexture) {
 
     for (int i=0; i < numAliens; i++) 
     {

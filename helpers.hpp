@@ -2,6 +2,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <deque>
 
 /*  Data hiding: 
  *    Can only access 'Private' data with member functions 
@@ -41,4 +42,5 @@ class Aliens
         }
 };
 
-void initAmmo(int numBullets, std::vector<sf::Sprite>* bulletVector, sf::Texture* bulletTexture);
+void initAmmo(int numBullets, std::deque<sf::Sprite>* bulletVector, sf::Texture* bulletTexture);
+void initAliens(int numAliens, std::deque<sf::Sprite>* alienVector, sf::Texture* alienTexture);
