@@ -4,43 +4,66 @@
 #include <SFML/Audio.hpp>
 #include <deque>
 
-/*  Data hiding: 
- *    Can only access 'Private' data with member functions 
- * 
- *  Public -- Private -- Protected
- *    Access modifiers in C++ set accessibility of class members
- *    so cannot access directly outside of included functions.
- * 
+/* 
+ *  cObject Class:
+ *     Creates 'collision objects' where each object is a shape with
+ *     an attached hitbox. The hitbox can detect collisions by checking
+ *     if an intersection with another collision object occurred.
  */
-class Aliens
+class cObject
 {
     private:
-        sf::Sprite* self;
+        sf::RectangleShape shape;
+        sf::FloatRect hitbox;
 
     public:
-        /* Constructor --------------- */
-        Aliens()
+        /* Constructor: Create the collision rectangle --------- */
+        cObject() 
         {
-            std::cout << "Default constructor called:\n" << std::endl;
+            // Default constructor
+        }
+        cObject(sf::Vector2f coord, sf::Vector2f objSize, 
+                sf::Vector2f hitboxSize, sf::Color color)
+        {
+            /* Initialize hitbox */
+            sf::FloatRect objHitbox; 
+            objHitbox.left = coord.x; 
+            objHitbox.top = coord.y; 
+            objHitbox.width = hitboxSize.x; 
+            objHitbox.height = hitboxSize.y;
+
+            /* Initialize object shape */
+            sf::RectangleShape objShape;
+            objShape.setSize(objSize);
+            objShape.setPosition(coord);
+            objShape.setFillColor(color);
+
+            /* Save the hitbox and shape addresses */
+            hitbox = objHitbox;
+            shape = objShape;
         }
 
         /* Member functions --------------- */
-        void setSprite(sf::Sprite* ptr)
+        sf::RectangleShape* Shape()
         {
-            self = ptr;
+            return &shape;  // Return shape address
         }
 
-        sf::Sprite* getSprite()
+        sf::FloatRect* Hitbox()
         {
-            return self;
+            return &hitbox;  // Return hitbox address
         }
-
+        
         /* Destructor --------------- */
-        ~Aliens()
+        ~cObject()
         {
             std::cout << "Bullet fizzled out\n" << std::endl;
         }
 };
 
+/* 
+ *  Function prototypes
+ */
 void initAmmo(int numBullets, std::deque<sf::Sprite>* bulletVector, sf::Texture* bulletTexture);
 void initAliens(int numAliens, std::deque<sf::Sprite>* alienVector, sf::Texture* alienTexture);
+void updateAmmoText(int ammoRemaining, sf::Text* displayedText, sf::Clock gameClock);

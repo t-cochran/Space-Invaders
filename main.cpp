@@ -8,8 +8,11 @@
 
 #include "helpers.cpp"
 
-#define LEFTMAX    -452
-#define RIGHTMAX    470
+
+#define XMIN        0.0f
+#define XMAX        920.0f
+#define YMIN        -50.0f
+#define YMAX        920.0f
 #define TOPMAX      -1000.0f
 #define BULLETSPEED 15.0f
 #define MAXAMMO     50
@@ -30,12 +33,16 @@ int main(int argc, char* argv[])
     alienTexture.loadFromFile("Textures/alien.png");
 
     /* Load sprites */
-    sf::Sprite background(spaceTexture), ship(shipTexture), bullet, alien;
+    sf::Sprite background, ship, alien;
+    background.setTexture(spaceTexture);
+    ship.setTexture(shipTexture);
     ship.scale(sf::Vector2f(0.1f, .1f));
-    ship.setOrigin(sf::Vector2f(-4500.f, -9300.f));
+    ship.setPosition(500.0f, 920.0f);
 
     /* Initialize ammo and aliens vectors */
-    std::deque<sf::Sprite> ammo, reload, aliens;
+    cObject bullet;
+    std::deque<cObject> ammo, reload;
+    std::deque<sf::Sprite> aliens;
     initAmmo(10, &ammo, &bulletTexture);
     initAliens(4, &aliens, &alienTexture);
 
@@ -68,10 +75,28 @@ int main(int argc, char* argv[])
     /* Initialize game clock */
     sf::Clock clock;
 
+    /* Initialize target dummy boxes */
+    cObject dummy(sf::Vector2f(325.0f, 300.0f), 
+                  sf::Vector2f(50.0f, 50.0f), 
+                  sf::Vector2f(50.0f, 50.0f), 
+                  sf::Color::Green);
+    cObject dummy2(sf::Vector2f(450.0f, 386.0f), 
+                   sf::Vector2f(50.0f, 50.0f), 
+                   sf::Vector2f(50.0f, 50.0f), 
+                   sf::Color::Green);
+    cObject dummy3(sf::Vector2f(200.0f, 400.0f), 
+                   sf::Vector2f(50.0f, 50.0f), 
+                   sf::Vector2f(50.0f, 50.0f), 
+                   sf::Color::Green);
+    cObject dummy4(sf::Vector2f(500.0f, 500.0f), 
+                   sf::Vector2f(50.0f, 50.0f), 
+                   sf::Vector2f(50.0f, 50.0f), 
+                   sf::Color::Green);
+
     /* Main game loop */
     while (window.isOpen())
     {
-        /* Event Loop --------------------------------------------------------------------------- */
+        /* Event Loop ------------------------------------------------------------------------ */
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -98,7 +123,7 @@ int main(int argc, char* argv[])
                             ammoRemain--;
 
                             // Set the bullet's initial position to the ship's
-                            bullet.setPosition(ship.getPosition());
+                            bullet.Shape() -> setPosition(ship.getPosition());
 
                             // Add the bullet to the reload queue
                             reload.push_back(bullet);
@@ -110,40 +135,32 @@ int main(int argc, char* argv[])
                         }
                         break;
                     
+                    case sf::Keyboard::R:
+                        dummy.Shape() -> setFillColor(sf::Color::Green);
+                        break;
+
                     default :
                         break;
                 }
             }
         }
 
-        /* Game Frames -------------------------------------------------------------------------- */
+        /* Game Frames ----------------------------------------------------------------------- */
         window.clear();
 
         /* Draw the background, ship, and aliens */
         window.draw(background);
         window.draw(ship);
         window.draw(alien);
+
+        /* Draw green target dummies */
+        window.draw(*dummy.Shape());
+        window.draw(*dummy2.Shape());
+        window.draw(*dummy3.Shape());
+        window.draw(*dummy4.Shape());
         
         /* Update ammo text */
-        std::string textString;
-        text.setFillColor(ammoRemain > 0 ? sf::Color::Cyan : sf::Color::Red);
-        if (ammoRemain > 0)
-        {   // Print current ammo left
-            textString = "Ammo: " + std::to_string(ammoRemain);
-        }
-        else
-        {   // Print out of ammo
-            if ((int)std::round(clock.getElapsedTime().asMilliseconds()) % 2 == 0) 
-            {
-                text.setFillColor(sf::Color::Transparent);
-            }
-            text.setScale(sf::Vector2f(1.5, 1.5));
-            text.setPosition(225, 500);
-            textString = "OUT OF AMMO!";
-        }
-
-        /* Draw ammo text */
-        text.setString(textString);
+        updateAmmoText(ammoRemain, &text, clock);
         window.draw(text);
 
         /* Update aliens position */
@@ -183,31 +200,62 @@ int main(int argc, char* argv[])
         }
 
         /* Update bullet position */
-        for (std::deque<sf::Sprite>::iterator it = reload.begin(); it != reload.end(); it++) 
+        for (std::deque<cObject>::iterator it = reload.begin(); it != reload.end(); it++) 
         {
-            if (it -> getPosition().y < TOPMAX) // Add offscreen bullets back to ammo
+            /* Offscreen bullets go back to the ammo vector */
+            if (it -> Shape() -> getPosition().y < YMIN)
             {
-                it -> setPosition(ship.getPosition());
+                it -> Shape() -> setPosition(ship.getPosition());
                 ammo.push_back(*it);
                 reload.pop_front();
             }
-            else  // Draw the bullet that was fired
+            /* Draw the bullets currently fired */
+            else 
             {
-                it -> setPosition(it -> getPosition().x, it -> getPosition().y - BULLETSPEED);
-                window.draw(*it);   
+                /* Update the position of the bullet */
+                float x = it -> Shape() -> getPosition().x;
+                float y = it -> Shape() -> getPosition().y - BULLETSPEED;
+                it -> Shape() -> setPosition(sf::Vector2f(x, y));
+
+                /* Update the position of the bullet's hitbox */
+                it -> Hitbox() -> left = x;
+                it -> Hitbox() -> top = y;
+
+                /* Detect a collisions with target dummies */
+                if (it -> Hitbox() -> intersects(*dummy.Hitbox())) 
+                {
+                    std::cout << "HIT!" << std::endl;
+                    dummy.Shape() -> setFillColor(sf::Color::Transparent);
+                } 
+                else if (it -> Hitbox() -> intersects(*dummy2.Hitbox())) 
+                {
+                    std::cout << "HIT!" << std::endl;
+                    dummy2.Shape() -> setFillColor(sf::Color::Transparent);
+                } 
+                else if (it -> Hitbox() -> intersects(*dummy3.Hitbox())) 
+                {
+                    std::cout << "HIT!" << std::endl;
+                    dummy3.Shape() -> setFillColor(sf::Color::Transparent);
+                } 
+                else if (it -> Hitbox() -> intersects(*dummy4.Hitbox())) 
+                {
+                    std::cout << "HIT!" << std::endl;
+                    dummy4.Shape() -> setFillColor(sf::Color::Transparent);
+                }
+                window.draw(*it -> Shape());   
             }
         }
 
         /* Move the ship left */
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && ship.getPosition().x > LEFTMAX) 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && ship.getPosition().x > XMIN) 
         {
-            ship.setPosition(ship.getPosition().x - 5.0f, 0.0f);
+            ship.setPosition(ship.getPosition().x - 5.0f, ship.getPosition().y);
         }
 
         /* Move the ship right */
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && ship.getPosition().x < RIGHTMAX) 
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && ship.getPosition().x < XMAX) 
         {
-            ship.setPosition(ship.getPosition().x + 5.0f, 0.0f);
+            ship.setPosition(ship.getPosition().x + 5.0f, ship.getPosition().y);
         }
 
         /* Display the frame */
