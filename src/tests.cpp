@@ -4,8 +4,6 @@
 #include <vector>    // vector class
 #include <array>     // array class
 
-#include "helpers.hpp"
-
 /* 
  *  '::' scope resolution operator
  *       Access global when local of same name

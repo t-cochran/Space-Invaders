@@ -5,7 +5,7 @@ IDIR =../include
 CC = g++
 
 # compiler flags:
-CFLAGS  = -c -g -Wall -I $(IDIR)
+CFLAGS  = -c -g -Wall -I$(IDIR)
 
 #  SFML libraries
 LIBS = -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
@@ -15,7 +15,9 @@ TARGET = main
 
 all:
 	$(CC) $(CFLAGS) $(TARGET).cpp
-	$(CC) $(TARGET).o -o $(TARGET) $(LIBS)
+	$(CC) $(CFLAGS) entityClass.cpp
+	$(CC) $(CFLAGS) helpers.cpp
+	$(CC) $(TARGET).o helpers.o entityClass.o -o $(TARGET) $(LIBS)
 	$(CC) -c -g -Wall tests.cpp 
 	$(CC) tests.o -o tests
 
