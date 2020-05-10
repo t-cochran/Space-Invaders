@@ -18,14 +18,9 @@ all:
 	$(CC) $(CFLAGS) entityClass.cpp
 	$(CC) $(CFLAGS) helpers.cpp
 	$(CC) $(TARGET).o helpers.o entityClass.o -o $(TARGET) $(LIBS)
-	$(CC) -c -g -Wall tests.cpp 
-	$(CC) tests.o -o tests
 
 run:
 	./$(TARGET)
-
-test:
-	@./tests
 
 clean:
 	rm -f $(TARGET) tests helpers *.o *~ 

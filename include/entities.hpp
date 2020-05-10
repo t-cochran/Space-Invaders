@@ -2,6 +2,7 @@
 #define ENTITIES_H
 
 #include <iostream>
+#include <deque>
 #include <SFML/Graphics.hpp>
 
 /* 
@@ -13,23 +14,30 @@
 class Entity
 {
     private:
+        bool firedWeapon;
         sf::Sprite sprite;
         sf::FloatRect hitbox;
         sf::RectangleShape hitboxShape;
+        std::deque<Entity> ammo;
+        std::deque<Entity> ammoReload;
 
     public:
         Entity();
         sf::Vector2f getPosition();
         sf::RectangleShape getHitboxShape();
-        sf::Sprite* getSprite() { return &sprite; }
-        sf::FloatRect* getHitbox() { return &hitbox; }
+        sf::Sprite* getSprite() {return &sprite;}
+        sf::FloatRect* getHitbox() {return &hitbox;}
+        std::deque<Entity>* getAmmoQueue() {return &ammo;}
+        std::deque<Entity>* getReloadQueue() {return &ammoReload;}
+        bool getFiredStatus();
+        void setFiredWeapon(bool val);
+        void setBullet(Entity bullet);
+        void setBulletReload(Entity bullet);
         void setSpriteSize(sf::Vector2f objSize);
         void setSpritePosition(sf::Vector2f coord);
         void setSpriteTexture(sf::Texture* texture);
         void setHitboxPosition(sf::Vector2f coord);
         void setHitboxSize(sf::Vector2f hitboxSize);
-        void drawSprite(sf::RenderWindow* window);
-        void drawHitbox(sf::RenderWindow* window);
         ~Entity();
 };
 

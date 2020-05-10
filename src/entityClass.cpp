@@ -45,14 +45,24 @@ sf::RectangleShape Entity::getHitboxShape()
     return hitboxShape;
 }
 
-void Entity::drawSprite(sf::RenderWindow* window)
+void Entity::setBullet(Entity bullet)
 {
-    window -> draw(sprite);
+    ammo.push_back(bullet);
 }
 
-void Entity::drawHitbox(sf::RenderWindow* window)
+void Entity::setBulletReload(Entity bullet)
 {
-    window -> draw(hitboxShape);
+    ammoReload.push_back(bullet);
+}
+
+void Entity::setFiredWeapon(bool val)
+{
+    firedWeapon = val;
+}
+
+bool Entity::getFiredStatus()
+{
+    return firedWeapon;
 }
 
 Entity::~Entity() {}
