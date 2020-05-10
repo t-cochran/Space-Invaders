@@ -16,11 +16,12 @@ TARGET = main
 all:
 	$(CC) $(CFLAGS) $(TARGET).cpp
 	$(CC) $(CFLAGS) entityClass.cpp
-	$(CC) $(CFLAGS) helpers.cpp
-	$(CC) $(TARGET).o helpers.o entityClass.o -o $(TARGET) $(LIBS)
+	$(CC) $(CFLAGS) soundClass.cpp
+	$(CC) $(CFLAGS) util.cpp
+	$(CC) $(TARGET).o util.o entityClass.o soundClass.o -o $(TARGET) $(LIBS)
 
 run:
 	./$(TARGET)
 
 clean:
-	rm -f $(TARGET) tests helpers *.o *~ 
+	rm -f $(TARGET) *.o *~ 

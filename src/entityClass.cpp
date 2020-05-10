@@ -15,9 +15,12 @@ void Entity::setSpritePosition(sf::Vector2f coord)
     sprite.setPosition(coord);
 }
 
-void Entity::setSpriteTexture(sf::Texture* texture)
+void Entity::setTexture(const std::string path)
 {
-    sprite.setTexture(*texture);
+    sf::Texture* txtr = new sf::Texture;
+    txtr -> loadFromFile(path);
+    sprite.setTexture(*txtr);
+    texture = txtr;
 }
 
 void Entity::setHitboxPosition(sf::Vector2f coord)
@@ -65,4 +68,5 @@ bool Entity::getFiredStatus()
     return firedWeapon;
 }
 
-Entity::~Entity() {}
+
+Entity::~Entity() { }

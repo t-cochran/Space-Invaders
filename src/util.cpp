@@ -1,8 +1,8 @@
-#include "helpers.hpp"
+#include "util.hpp"
 #include "entities.hpp"
 
 // Initialize bullets as collision objects and put them into a vector
-void initAmmo(int numBullets, Entity* gameEntity, sf::Texture* bulletTexture, 
+void initAmmo(int numBullets, Entity* gameEntity, const std::string texturePath, 
               sf::Vector2f position, sf::Vector2f spriteSize, sf::Vector2f hitboxSize) {
 
     /* Fill the bullet vector with bullets */
@@ -13,14 +13,14 @@ void initAmmo(int numBullets, Entity* gameEntity, sf::Texture* bulletTexture,
         bulletObj.setHitboxPosition(position);
         bulletObj.setSpriteSize(spriteSize);
         bulletObj.setHitboxSize(hitboxSize);
-        bulletObj.setSpriteTexture(bulletTexture);
+        bulletObj.setTexture(texturePath);
         gameEntity -> setBullet(bulletObj);
     }
 }
 
 // Initialize alien sprites and put them into a vector
-void initAliens(int numAliens, std::vector<Entity>* alienVector, sf::Texture* alienTexture, 
-                sf::Texture* bulletTexture, int x, int y, float width, float length) {
+void initAliens(int numAliens, std::vector<Entity>* alienVector, const std::string alienTexture, 
+                const std::string bulletTexture, int x, int y, float width, float length) {
 
     /* Fill the alien vector with aliens */
     for (int i=0; i < numAliens; i++) 
@@ -31,7 +31,7 @@ void initAliens(int numAliens, std::vector<Entity>* alienVector, sf::Texture* al
         alienObj.setHitboxPosition(sf::Vector2f(x + (i*80), y));  // Set alien hitbox position
         alienObj.setSpriteSize(sf::Vector2f(width, length));      // Set alien size
         alienObj.setHitboxSize(sf::Vector2f(50.0f, 50.0f));       // Set alien hitbox size
-        alienObj.setSpriteTexture(alienTexture);                  // Set alien texture
+        alienObj.setTexture(alienTexture);                  // Set alien texture
 
         /* Initialize the alien's bullets */
         initAmmo(1, &alienObj, bulletTexture, 
@@ -105,7 +105,8 @@ void spawnAliens(std::vector<Entity>* alienVector, sf::RenderWindow* scrn, bool*
 }
 
 // Checks whether a bullet has hit an alien
-void checkHit(std::vector<Entity>* alienVector, std::deque<Entity>::iterator bulletObj, sf::Sound* hitSound)
+void checkHit(std::vector<Entity>* alienVector, std::deque<Entity>::iterator bulletObj, 
+              Sounds* hitSound)
 {
     for (std::vector<Entity>::iterator alienObj = alienVector -> begin(); alienObj != alienVector -> end();) {
         if (bulletObj -> getHitbox() -> intersects(*alienObj -> getHitbox())) 
@@ -115,4 +116,14 @@ void checkHit(std::vector<Entity>* alienVector, std::deque<Entity>::iterator bul
             bulletObj -> getSprite() -> setPosition(0.0, YMIN);  // Set bullet out of bounds to be reloaded
         } else { ++alienObj; }
     }
+}
+
+sf::Text* loadFont(const std::string path, sf::Font* font, sf::Vector2f scale, unsigned int size) 
+{
+    sf::Text* text = new sf::Text;
+    font -> loadFromFile(path);
+    text -> setFont(*font);
+    text -> setScale(scale);
+    text -> setCharacterSize(size);
+    return text;
 }

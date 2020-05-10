@@ -1,5 +1,5 @@
 #include <SFML/Audio.hpp>
-#include "helpers.hpp"
+#include "util.hpp"
 #include <cstdio>
 #include <stdlib.h>
 
@@ -11,63 +11,42 @@ int main(int argc, char* argv[])
     window.setFramerateLimit(100);
     window.setKeyRepeatEnabled(false);
 
-    /* Load textures*/
-    sf::Texture shipTexture, spaceTexture, playerBulletTexture;
-    sf::Texture alienTexture, alienBulletTexture;
-    shipTexture.loadFromFile("../Textures/ship.png");
-    spaceTexture.loadFromFile("../Textures/spacebg.jpg");
-    playerBulletTexture.loadFromFile("../Textures/playerBullet.png");
-    alienBulletTexture.loadFromFile("../Textures/alienBullet.png");
-    alienTexture.loadFromFile("../Textures/alien.png");
-
     /* Load background */
-    sf::Sprite background;
-    background.setTexture(spaceTexture);
+    sf::Sprite background; sf::Texture space;
+    space.loadFromFile("../Textures/spacebg.jpg");
+    background.setTexture(space);
+
+    /* Load sounds */
+    Sounds shot("../Sounds/shoot.wav");
+    Sounds outOfAmmo("../Sounds/click.wav");
+    Sounds hit("../Sounds/shotdown.wav");
+
+    /* Load fonts */
+    sf::Font arial;
+    sf::Text* text = loadFont("../Fonts/arial.ttf", &arial, sf::Vector2f(0.75, 0.75), 50);
 
     /* Initialize player spaceship */
     Entity ship;
     ship.setSpritePosition(sf::Vector2f(500.0f, 920.0f));
-    ship.setSpriteSize(sf::Vector2f(0.1f, .1f));
     ship.setHitboxPosition(sf::Vector2f(493.0f, 940.0f));
+    ship.setSpriteSize(sf::Vector2f(0.1f, .1f));
     ship.setHitboxSize(sf::Vector2f(90.0f, 50.0f));
-    ship.setSpriteTexture(&shipTexture);
-
-    /* Initialize player ammo */
-    int ammoRemain = MAXAMMO;
-    initAmmo(10, &ship, &playerBulletTexture, 
-             sf::Vector2f(-500.0f, -920.0f),   // object position
-             sf::Vector2f(1.0f, 1.0f),         // sprite size
-             sf::Vector2f(5.0f, 5.0f));        // hitbox size
+    ship.setTexture("../Textures/ship.png");
 
     /* Initialize aliens */
     bool moveLeft = true;
     std::vector<Entity> alienRow1, alienRow2, alienRow3, alienRow4;
-    initAliens(10, &alienRow1, &alienTexture, &alienBulletTexture, XMIN, 100, 0.07, 0.07);  // Create a row of 10 aliens
-    initAliens(10, &alienRow2, &alienTexture, &alienBulletTexture, XMIN, 175, 0.07, 0.07);  // Create a row of 10 aliens
-    initAliens(10, &alienRow3, &alienTexture, &alienBulletTexture, XMIN, 250, 0.07, 0.07);  // Create a row of 10 aliens
-    initAliens(10, &alienRow4, &alienTexture, &alienBulletTexture, XMIN, 325, 0.07, 0.07);  // Create a row of 10 aliens
-    std::vector<Entity*> alienAttackSet;
-    for (std::vector<Entity>::iterator it = alienRow4.begin(); it != alienRow4.end(); it++)
-    {
-        alienAttackSet.push_back(&*it);
-    }
+    initAliens(10, &alienRow1, "../Textures/alien.png", "../Textures/alienBullet.png", XMIN, 100, 0.07, 0.07);  // Create a row of 10 aliens
+    initAliens(10, &alienRow2, "../Textures/alien.png", "../Textures/alienBullet.png", XMIN, 175, 0.07, 0.07);  // Create a row of 10 aliens
+    initAliens(10, &alienRow3, "../Textures/alien.png", "../Textures/alienBullet.png", XMIN, 250, 0.07, 0.07);  // Create a row of 10 aliens
+    initAliens(10, &alienRow4, "../Textures/alien.png", "../Textures/alienBullet.png", XMIN, 325, 0.07, 0.07);  // Create a row of 10 aliens
 
-    /* Load sounds */
-    sf::Sound shot, outOfAmmo, hit;
-    sf::SoundBuffer laserBuf, clickBuf, hitBuf;
-    laserBuf.loadFromFile("../Sounds/shoot.wav");
-    clickBuf.loadFromFile("../Sounds/click.wav");
-    hitBuf.loadFromFile("../Sounds/shotdown.wav");
-    outOfAmmo.setBuffer(clickBuf); shot.setBuffer(laserBuf); hit.setBuffer(hitBuf);
-    outOfAmmo.setVolume(VOLUME); shot.setVolume(VOLUME); hit.setVolume(VOLUME);
-
-    /* Load fonts and texts */
-    sf::Font arial;
-    sf::Text text;
-    arial.loadFromFile("../Fonts/arial.ttf");
-    text.setFont(arial);
-    text.setScale(sf::Vector2f(0.75, 0.75));
-    text.setCharacterSize(50);
+    /* Initialize player ammo */
+    int ammoRemain = MAXAMMO;
+    initAmmo(10, &ship, "../Textures/playerBullet.png", 
+             sf::Vector2f(-500.0f, -920.0f),   // object position
+             sf::Vector2f(1.0f, 1.0f),         // sprite size
+             sf::Vector2f(5.0f, 5.0f));        // hitbox size
     
     /* Main game loop */
     while (window.isOpen())
@@ -114,10 +93,6 @@ int main(int argc, char* argv[])
                         }
                         break;
                     
-                    case sf::Keyboard::R:
-                        /* TODO: Respawn aliens for testing purposes */     
-                        break;
-
                     default :
                         break;
                 }
@@ -137,8 +112,8 @@ int main(int argc, char* argv[])
         #endif
 
         /* Update ammo text */
-        updateAmmoText(ammoRemain, &text, gameClock);
-        window.draw(text);
+        updateAmmoText(ammoRemain, text, gameClock);
+        window.draw(*text);
 
         /* Update alien positions */
         spawnAliens(&alienRow1, &window, &moveLeft, &gameClock);

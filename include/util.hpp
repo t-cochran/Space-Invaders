@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <deque>
 #include "entities.hpp"
+#include "sounds.hpp"
 
 /* Constants */
 #define XMIN        0.0f
@@ -22,12 +23,13 @@
  *  Function prototypes
  */
 void updateAmmoText(int ammoRemaining, sf::Text* displayedText, sf::Clock clock);
-void initAmmo(int numBullets, Entity* gameEntity, sf::Texture* bulletTexture, 
+sf::Text* loadFont(const std::string path, sf::Font* font, sf::Vector2f scale, unsigned int size);
+void initAmmo(int numBullets, Entity* gameEntity, const std::string texturePath, 
               sf::Vector2f position, sf::Vector2f spriteSize, sf::Vector2f hitboxSize);
 void checkHit(std::vector<Entity>* alienVector, std::deque<Entity>::iterator bulletObj, 
-              sf::Sound* hitSound);
-void initAliens(int numAliens, std::vector<Entity>* alienVector, sf::Texture* alienTexture, 
-                sf::Texture* bulletTexture, int x, int y, float width, float length);
+              Sounds* hitSound);
+void initAliens(int numAliens, std::vector<Entity>* alienVector, const std::string alienTexture, 
+                const std::string bulletTexture, int x, int y, float width, float length);
 void spawnAliens(std::vector<Entity>* alienVector, sf::RenderWindow* scrn, bool* leftDir, 
                  sf::Clock* clock);
 

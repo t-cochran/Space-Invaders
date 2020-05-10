@@ -15,6 +15,7 @@ class Entity
 {
     private:
         bool firedWeapon;
+        sf::Texture* texture;
         sf::Sprite sprite;
         sf::FloatRect hitbox;
         sf::RectangleShape hitboxShape;
@@ -35,7 +36,7 @@ class Entity
         void setBulletReload(Entity bullet);
         void setSpriteSize(sf::Vector2f objSize);
         void setSpritePosition(sf::Vector2f coord);
-        void setSpriteTexture(sf::Texture* texture);
+        void setTexture(const std::string path);
         void setHitboxPosition(sf::Vector2f coord);
         void setHitboxSize(sf::Vector2f hitboxSize);
         ~Entity();
