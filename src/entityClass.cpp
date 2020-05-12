@@ -48,7 +48,7 @@ sf::RectangleShape Entity::getHitboxShape()
     return hitboxShape;
 }
 
-void Entity::setBullet(Entity bullet)
+void Entity::setBulletAmmo(Entity bullet)
 {
     ammo.push_back(bullet);
 }
@@ -68,5 +68,14 @@ bool Entity::getFiredStatus()
     return firedWeapon;
 }
 
+void Entity::setStatus(bool status)
+{
+    alive = status;
+}
+
+bool Entity::getStatus()
+{
+    return alive;
+}
 
 Entity::~Entity() { }

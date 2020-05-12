@@ -33,20 +33,18 @@ int main(int argc, char* argv[])
     ship.setHitboxSize(sf::Vector2f(90.0f, 50.0f));
     ship.setTexture("../Textures/ship.png");
 
-    /* Initialize aliens */
-    bool moveLeft = true;
-    std::vector<Entity> alienRow1, alienRow2, alienRow3, alienRow4;
-    initAliens(10, &alienRow1, "../Textures/alien.png", "../Textures/alienBullet.png", XMIN, 100, 0.07, 0.07);  // Create a row of 10 aliens
-    initAliens(10, &alienRow2, "../Textures/alien.png", "../Textures/alienBullet.png", XMIN, 175, 0.07, 0.07);  // Create a row of 10 aliens
-    initAliens(10, &alienRow3, "../Textures/alien.png", "../Textures/alienBullet.png", XMIN, 250, 0.07, 0.07);  // Create a row of 10 aliens
-    initAliens(10, &alienRow4, "../Textures/alien.png", "../Textures/alienBullet.png", XMIN, 325, 0.07, 0.07);  // Create a row of 10 aliens
-
     /* Initialize player ammo */
-    int ammoRemain = MAXAMMO;
+    int ammoRemain = MAX_AMMO;
     initAmmo(10, &ship, "../Textures/playerBullet.png", 
              sf::Vector2f(-500.0f, -920.0f),   // object position
              sf::Vector2f(1.0f, 1.0f),         // sprite size
              sf::Vector2f(5.0f, 5.0f));        // hitbox size
+
+    /* Initialize aliens */
+    bool moveLeft = true;
+    std::vector<std::vector<Entity>*> alienRefBlock; 
+    initAliens(ALIEN_ROWS, ALIEN_COLUMNS, &alienRefBlock, 
+              "../Textures/alien.png", "../Textures/alienBullet.png");
     
     /* Main game loop */
     while (window.isOpen())
@@ -116,60 +114,62 @@ int main(int argc, char* argv[])
         window.draw(*text);
 
         /* Update alien positions */
-        spawnAliens(&alienRow1, &window, &moveLeft, &gameClock);
-        spawnAliens(&alienRow2, &window, &moveLeft, &gameClock);
-        spawnAliens(&alienRow3, &window, &moveLeft, &gameClock);
-        spawnAliens(&alienRow4, &window, &moveLeft, &gameClock);
+        updateAlienPosition(&alienRefBlock, &window, &moveLeft, &gameClock);
 
-        /* Make row 4 aliens fire */
-        for (std::vector<Entity>::iterator it = alienRow4.begin(); it != alienRow4.end(); it++)
-        {
+        /* Allow Aliens at the bottom of each column to fire */
+        /* Loop through references to each column of aliens in the reference block */
+        for (std::vector<std::vector<Entity>*>::iterator column = alienRefBlock.begin(); 
+            column != alienRefBlock.end(); 
+            column++) 
+        { 
             /* Fire a bullet if randNumb == 5 */
             int randNum = rand() % 100;
-            if (randNum == 5) 
+            if (randNum == 5 && (*column) -> back().getFiredStatus() == false) 
             {
-                it -> setFiredWeapon(true);
+                (*column) -> back().setFiredWeapon(true);
             }
 
             /* Update the status of bullets that were not fired */
-            if (it -> getFiredStatus() == false)
+            if ((*column) -> back().getFiredStatus() == false)
             {
                 /* Get the current (x,y)-position of the alien */
-                float x = it -> getSprite() -> getPosition().x;
-                float y = it -> getSprite() -> getPosition().y;
+                float x = (*column) -> back().getSprite() -> getPosition().x;
+                float y = (*column) -> back().getSprite() -> getPosition().y;
 
                 /* Update the unfired bullet sprite and hitbox positions */
-                it -> getAmmoQueue() -> front().setSpritePosition(sf::Vector2f(x + 30, y + 30));
-                it -> getAmmoQueue() -> front().setHitboxPosition(sf::Vector2f(x + 30, y + 30));
+                (*column) -> back().getAmmoQueue() -> front().setSpritePosition(sf::Vector2f(x + 30, y + 30));
+                (*column) -> back().getAmmoQueue() -> front().setHitboxPosition(sf::Vector2f(x + 30, y + 30));
             }
 
             /* Update the status of bullets that were fired */
-            if (it -> getFiredStatus() == true)
+            if ((*column) -> back().getFiredStatus() == true)
             {
                 /* Reset the state of the alien after its bullet is out of bounds */
-                if (it -> getAmmoQueue() -> front().getPosition().y > YMAX)
+                if ((*column) -> back().getAmmoQueue() -> front().getPosition().y > YMAX)
                 {
-                    it -> setFiredWeapon(false);
+                    (*column) -> back().setFiredWeapon(false);
                 }
                 /* Draw the bullets fired that are in bounds */
                 else
                 {
                     /* Get the current (x,y)-position of the bullet */
-                    float x = it -> getAmmoQueue() -> front().getPosition().x;
-                    float y = it -> getAmmoQueue() -> front().getPosition().y;
+                    float x = (*column) -> back().getAmmoQueue() -> front().getPosition().x;
+                    float y = (*column) -> back().getAmmoQueue() -> front().getPosition().y;
                     
                     /* Increment the position of the bullet */
-                    it -> getAmmoQueue() -> front().setSpritePosition(sf::Vector2f(x, y + ALIENBULLETSPEED));
-                    it -> getAmmoQueue() -> front().setHitboxPosition(sf::Vector2f(x, y + ALIENBULLETSPEED));
+                    (*column) -> back().getAmmoQueue() -> front().setSpritePosition(sf::Vector2f(x, y + ALIEN_BULLET_SPEED));
+                    (*column) -> back().getAmmoQueue() -> front().setHitboxPosition(sf::Vector2f(x, y + ALIEN_BULLET_SPEED));
 
                     /* Draw the bullet */
-                    window.draw(*it -> getAmmoQueue() -> front().getSprite()); 
+                    window.draw(*(*column) -> back().getAmmoQueue() -> front().getSprite()); 
                     #if SEE_HITBOX
-                        window.draw(*it -> getAmmoQueue() -> front().getHitboxShape());
+                        window.draw((*column) -> back().getAmmoQueue() -> front().getHitboxShape());
                     #endif 
                 }
             } 
         }
+
+        //printf("Ammo size: %ld, ReloadSize: %ld\n", ship.getAmmoQueue() -> size(), ship.getReloadQueue() -> size());
 
         /* Update player bullet positions */
         for (std::deque<Entity>::iterator bulletObj = ship.getReloadQueue() -> begin(); 
@@ -177,9 +177,9 @@ int main(int argc, char* argv[])
              bulletObj++) 
         {
             /* Push offscreen bullets back to the player ammo vector */
-            if (bulletObj -> getSprite() -> getPosition().y < YMIN)
+            if (bulletObj -> getSprite() -> getPosition().y <= YMIN && bulletObj != ship.getReloadQueue() -> end())
             {
-                ship.setBullet(*bulletObj);
+                ship.setBulletAmmo(*bulletObj);
                 ship.getReloadQueue() -> pop_front();
             }
             /* Draw the bullets fired by the player */
@@ -190,14 +190,11 @@ int main(int argc, char* argv[])
                 float y = bulletObj -> getSprite() -> getPosition().y;
 
                 /* Update the position of the bullet sprite and hitbox */
-                bulletObj -> setSpritePosition(sf::Vector2f(x, y - SHIPBULLETSPEED));
-                bulletObj -> setHitboxPosition(sf::Vector2f(x, y - SHIPBULLETSPEED));
+                bulletObj -> setSpritePosition(sf::Vector2f(x, y - SHIP_BULLET_SPEED));
+                bulletObj -> setHitboxPosition(sf::Vector2f(x, y - SHIP_BULLET_SPEED));
 
                 /* Detect a bullet hitting the aliens */
-                checkHit(&alienRow1, bulletObj, &hit);  // Check alien entities at row 1
-                checkHit(&alienRow2, bulletObj, &hit);  // Check alien entities at row 2
-                checkHit(&alienRow3, bulletObj, &hit);  // Check alien entities at row 3
-                checkHit(&alienRow4, bulletObj, &hit);  // Check alien entities at row 4
+                checkHit(&alienRefBlock, bulletObj, &hit);  // Check alien entities at row 1
 
                 /* Draw the bullet */
                 window.draw(*bulletObj -> getSprite()); 

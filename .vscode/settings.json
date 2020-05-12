@@ -60,6 +60,19 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "any": "cpp",
+        "cfenv": "cpp",
+        "charconv": "cpp",
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "csetjmp": "cpp",
+        "csignal": "cpp",
+        "cuchar": "cpp",
+        "forward_list": "cpp",
+        "regex": "cpp",
+        "scoped_allocator": "cpp",
+        "shared_mutex": "cpp",
+        "typeindex": "cpp"
     }
 }

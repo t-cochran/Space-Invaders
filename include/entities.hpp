@@ -14,6 +14,7 @@
 class Entity
 {
     private:
+        bool alive;
         bool firedWeapon;
         sf::Texture* texture;
         sf::Sprite sprite;
@@ -30,9 +31,11 @@ class Entity
         sf::FloatRect* getHitbox() {return &hitbox;}
         std::deque<Entity>* getAmmoQueue() {return &ammo;}
         std::deque<Entity>* getReloadQueue() {return &ammoReload;}
+        bool getStatus();
+        void setStatus(bool status);
         bool getFiredStatus();
         void setFiredWeapon(bool val);
-        void setBullet(Entity bullet);
+        void setBulletAmmo(Entity bullet);
         void setBulletReload(Entity bullet);
         void setSpriteSize(sf::Vector2f objSize);
         void setSpritePosition(sf::Vector2f coord);
