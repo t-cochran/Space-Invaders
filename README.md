@@ -1,5 +1,6 @@
 # Space Invaders
 ![Alt Text](https://i.imgur.com/WtagaZX.gif)
+
 Goals of this project:
 1. Improve my C++
 2. Use git more frequently
