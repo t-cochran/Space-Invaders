@@ -22,17 +22,12 @@ class Entity
         sf::Sprite sprite;
         sf::FloatRect hitbox;
         sf::RectangleShape hitboxShape;
-        std::vector<Entity> ammo;
-        std::vector<Entity> ammoReload;
 
     public:
         Entity();
         sf::Vector2f getPosition();
-        sf::RectangleShape getHitboxShape();
-        sf::Sprite* getSprite() {return &sprite;}
-        sf::FloatRect* getHitbox() {return &hitbox;}
-        std::vector<Entity>* getAmmoQueue() {return &ammo;}
-        std::vector<Entity>* getReloadQueue() {return &ammoReload;}
+        sf::Sprite* getSprite() { return &sprite; }
+        sf::FloatRect* getHitbox() { return &hitbox; }
         bool getStatus();
         void updateTexture(int val);
         void setStatus(bool status);

@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 
     /* Initialize player ammo */
     Projectile* bullet;
-    int ammoRemain = MAX_AMMO;
+    int ammoRemain = SHIP_AMMO;
     std::vector<Projectile*> shipAmmo;
     initAmmo(10, &shipAmmo, "../Textures/playerBullet.png", 
              sf::Vector2f(-500.0f, 920.0f),    // position
@@ -166,14 +166,14 @@ int main(int argc, char* argv[])
             float bullet_y = bullet -> getPosition().y;
 
             /* Determine whether the alien should fire */
-            int randNum = rand() % 500;
+            int randNum = rand() % 100;
             if (randNum == 5 && alien -> getFiredStatus() == false) 
             {
                 alien -> setFiredWeapon(true);
             }
 
             /* Bullet not fired or out of bounds: Set position to the alien's position */
-            if (bullet -> getPosition().y >= YMAX || alien -> getFiredStatus() == false)
+            if (bullet -> getPosition().y >= Y_MAX || alien -> getFiredStatus() == false)
             {
                 alien -> setFiredWeapon(false);
                 bullet -> setSpritePosition(sf::Vector2f(alien_x + 30, alien_y + 30));
@@ -218,7 +218,7 @@ int main(int argc, char* argv[])
             }
 
             /* Bullet fired: Bullet out of bounds */
-            if ((*bullet) -> getPosition().y <= YMIN)
+            if ((*bullet) -> getPosition().y <= Y_MIN)
             {
                 /* Reset the bullet's status */
                 (*bullet) -> setStatus(NOT_FIRED);
@@ -262,14 +262,14 @@ int main(int argc, char* argv[])
         }
 
         /* Left arrow key: move the ship left */
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && ship_x > XMIN) 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && ship_x > X_MIN) 
         {
             ship -> setSpritePosition(sf::Vector2f(ship_x - 5.0f, ship_y));
             ship -> setHitboxPosition(sf::Vector2f(ship_x - 5.0f, ship_y + 20));
         }
 
         /* Right arrow key: Move the ship right */
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && ship_x < XMAX) 
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && ship_x < X_MAX) 
         {
             ship -> setSpritePosition(sf::Vector2f(ship_x + 5.0f, ship_y));
             ship -> setHitboxPosition(sf::Vector2f(ship_x - 3.0f, ship_y + 20));

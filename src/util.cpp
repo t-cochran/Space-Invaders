@@ -52,8 +52,8 @@ void initAliens(int rows, int columns, std::vector<std::vector<Entity>*>* RefBlo
         {
             /* Create an alien entity */
             Entity* alienObj = new Entity;
-            alienObj -> setSpritePosition(sf::Vector2f(XMIN + x, y + 75)); // Set alien position
-            alienObj -> setHitboxPosition(sf::Vector2f(XMIN + x, y + 75)); // Set hitbox position
+            alienObj -> setSpritePosition(sf::Vector2f(X_MIN + x, y + 75)); // Set alien position
+            alienObj -> setHitboxPosition(sf::Vector2f(X_MIN + x, y + 75)); // Set hitbox position
             alienObj -> setSpriteSize(sf::Vector2f(0.07, 0.07));           // Set alien size
             alienObj -> setHitboxSize(sf::Vector2f(50.0f, 50.0f));         // Set hitbox size
             alienObj -> setTexture(alienTexture);                          // Set alien texture
@@ -66,7 +66,7 @@ void initAliens(int rows, int columns, std::vector<std::vector<Entity>*>* RefBlo
             {
                 /* Initialize ammo for the last row of aliens */
                 initAmmo(1, alienAmmo, bulletTexture, 
-                        sf::Vector2f(XMIN + x + 30, y + 30),  // position
+                        sf::Vector2f(X_MIN + x + 30, y + 30),  // position
                         sf::Vector2f(1.0f, 1.0f),             // sprite size
                         sf::Vector2f(15.0f, 15.0f));          // hitbox size
             }
@@ -105,8 +105,8 @@ void updateAlienPosition(std::vector<std::vector<Entity>*>* RefBlock, sf::Render
             float x = alienObj -> getPosition().x;
             float y = alienObj -> getPosition().y;
 
-            /* Move aliens left: (1) Not reached Xmin, (2) Pause every other second */
-            if (x >= XMIN && *leftDir) 
+            /* Move aliens left: (1) Not reached X_MIN, (2) Pause every other second */
+            if (x >= X_MIN && *leftDir) 
             {
                 if ((int)clock -> getElapsedTime().asSeconds() % 2 == 0) 
                 {
@@ -117,8 +117,8 @@ void updateAlienPosition(std::vector<std::vector<Entity>*>* RefBlock, sf::Render
                            
             } else { *leftDir = false; }
 
-            /* Move aliens left: (1) Not reached Xmax, (2) Pause every other second */
-            if (x <= XMAX && !(*leftDir)) 
+            /* Move aliens left: (1) Not reached X_MAX, (2) Pause every other second */
+            if (x <= X_MAX && !(*leftDir)) 
             {
                 if ((int)clock -> getElapsedTime().asSeconds() % 2 == 0) 
                 {   
@@ -155,7 +155,7 @@ void checkHit(std::vector<std::vector<Entity>*>* RefBlock,
             {
                 hitSound -> play();                                  // Play a hit sound
                 alienObj -> setStatus(DEAD);                         // Update alien status
-                bulletObj -> getSprite() -> setPosition(0.0, YMIN);  // Set bullet out of bounds to be reloaded
+                bulletObj -> getSprite() -> setPosition(0.0, Y_MIN);  // Set bullet out of bounds to be reloaded
             }
         }
     }
