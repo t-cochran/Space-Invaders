@@ -16,12 +16,14 @@ class Entity
     private:
         bool alive;
         bool firedWeapon;
-        sf::Texture* texture;
+        sf::Texture* texture1;
+        sf::Texture* texture2;
+        sf::Texture* texture3;
         sf::Sprite sprite;
         sf::FloatRect hitbox;
         sf::RectangleShape hitboxShape;
-        std::deque<Entity> ammo;
-        std::deque<Entity> ammoReload;
+        std::vector<Entity> ammo;
+        std::vector<Entity> ammoReload;
 
     public:
         Entity();
@@ -29,19 +31,20 @@ class Entity
         sf::RectangleShape getHitboxShape();
         sf::Sprite* getSprite() {return &sprite;}
         sf::FloatRect* getHitbox() {return &hitbox;}
-        std::deque<Entity>* getAmmoQueue() {return &ammo;}
-        std::deque<Entity>* getReloadQueue() {return &ammoReload;}
+        std::vector<Entity>* getAmmoQueue() {return &ammo;}
+        std::vector<Entity>* getReloadQueue() {return &ammoReload;}
         bool getStatus();
+        void updateTexture(int val);
         void setStatus(bool status);
         bool getFiredStatus();
         void setFiredWeapon(bool val);
-        void setBulletAmmo(Entity bullet);
-        void setBulletReload(Entity bullet);
+        void loadTexture(const std::string path);
         void setSpriteSize(sf::Vector2f objSize);
         void setSpritePosition(sf::Vector2f coord);
         void setTexture(const std::string path);
         void setHitboxPosition(sf::Vector2f coord);
         void setHitboxSize(sf::Vector2f hitboxSize);
+        void drawEntity(sf::RenderWindow &window);
         ~Entity();
 };
 

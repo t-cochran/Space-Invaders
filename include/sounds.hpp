@@ -17,6 +17,8 @@ class Sounds
     public:
         Sounds(const std::string path);
         void play();
+        void stop();
+        sf::Sound getSound() { return *sound; }
         void setVolume(float volume);
         ~Sounds();
 };

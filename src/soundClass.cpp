@@ -24,8 +24,13 @@ void Sounds::setVolume(float volume)
     sound -> setVolume(volume);
 }
 
+void Sounds::stop()
+{
+    sound -> stop();
+}
+
 Sounds::~Sounds() 
 { 
-    delete Sounds::sound;
-    delete Sounds::buffer;
+    free(Sounds::sound);
+    free(Sounds::buffer);
 }

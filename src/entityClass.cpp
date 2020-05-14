@@ -1,4 +1,5 @@
 #include "entities.hpp"
+#include "util.hpp"
 
 /* 
  *  Entity class member functions
@@ -20,7 +21,21 @@ void Entity::setTexture(const std::string path)
     sf::Texture* txtr = new sf::Texture;
     txtr -> loadFromFile(path);
     sprite.setTexture(*txtr);
-    texture = txtr;
+    texture1 = txtr;
+}
+
+void Entity::loadTexture(const std::string path)
+{
+    sf::Texture* txtr = new sf::Texture;
+    txtr -> loadFromFile(path);
+    texture2 = txtr;
+}
+
+void Entity::updateTexture(int val)
+{
+    if (val == 0) { sprite.setTexture(*texture1); }
+    if (val == 1) { sprite.setTexture(*texture2); }
+    if (val == 2) { sprite.setTexture(*texture3); }
 }
 
 void Entity::setHitboxPosition(sf::Vector2f coord)
@@ -48,16 +63,6 @@ sf::RectangleShape Entity::getHitboxShape()
     return hitboxShape;
 }
 
-void Entity::setBulletAmmo(Entity bullet)
-{
-    ammo.push_back(bullet);
-}
-
-void Entity::setBulletReload(Entity bullet)
-{
-    ammoReload.push_back(bullet);
-}
-
 void Entity::setFiredWeapon(bool val)
 {
     firedWeapon = val;
@@ -76,6 +81,14 @@ void Entity::setStatus(bool status)
 bool Entity::getStatus()
 {
     return alive;
+}
+
+void Entity::drawEntity(sf::RenderWindow &window)
+{
+    window.draw(sprite);
+    #if SEE_HITBOX
+        window.draw(hitboxShape);
+    #endif  
 }
 
 Entity::~Entity() { }
