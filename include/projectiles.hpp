@@ -3,13 +3,15 @@
 
 #include <SFML/Graphics.hpp>
 
-/* 
- *  A class for projectile objects fired by the aliens and the player
+/*
+ *  Projectile Class
+ *     A class for projectile objects that represent bullets fired by 
+ *     the aliens and player space ship
  */
 class Projectile
 {
     private:
-        bool busy;
+        bool status;
         sf::Texture* texture;
         sf::Sprite sprite;
         sf::FloatRect hitbox;
@@ -18,17 +20,16 @@ class Projectile
     public:
         Projectile();
         sf::Vector2f getPosition();
-        sf::RectangleShape getHitboxShape();
-        sf::Sprite* getSprite() {return &sprite;}
-        sf::FloatRect* getHitbox() {return &hitbox;}
+        sf::FloatRect* getHitbox() { return &hitbox; }
+        void setSpritePosition(sf::Vector2f coord);
+        void setSpriteSize(sf::Vector2f objSize);
+        void setHitboxSize(sf::Vector2f hitboxSize);
+        void setHitboxPosition(sf::Vector2f coord);
         bool getStatus();
         void setStatus(bool val);
-        void setSpriteSize(sf::Vector2f objSize);
-        void setSpritePosition(sf::Vector2f coord);
-        void setTexture(const std::string path);
-        void setHitboxPosition(sf::Vector2f coord);
-        void setHitboxSize(sf::Vector2f hitboxSize);
+        void setTexture(const std::string path);        
         void drawProjectile(sf::RenderWindow &window);
         ~Projectile();
 };
+
 #endif

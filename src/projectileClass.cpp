@@ -1,4 +1,3 @@
-#include "projectiles.hpp"
 #include "util.hpp"
 
 /* 
@@ -6,11 +5,14 @@
  */
 Projectile::Projectile() {}
 
-void Projectile::setTexture(const std::string path)
+sf::Vector2f Projectile::getPosition() 
 {
-    sf::Texture* txtr = new sf::Texture;
-    txtr -> loadFromFile(path);
-    sprite.setTexture(*txtr);
+    return sprite.getPosition();
+}
+
+void Projectile::setSpritePosition(sf::Vector2f coord)
+{
+    sprite.setPosition(coord);
 }
 
 void Projectile::setSpriteSize(sf::Vector2f objSize) 
@@ -18,9 +20,11 @@ void Projectile::setSpriteSize(sf::Vector2f objSize)
     sprite.scale(objSize);
 }
 
-void Projectile::setSpritePosition(sf::Vector2f coord)
+void Projectile::setHitboxSize(sf::Vector2f hitboxSize)
 {
-    sprite.setPosition(coord);
+    hitbox.width = hitboxSize.x;
+    hitbox.height = hitboxSize.y;
+    hitboxShape.setSize(hitboxSize);
 }
 
 void Projectile::setHitboxPosition(sf::Vector2f coord)
@@ -33,29 +37,19 @@ void Projectile::setHitboxPosition(sf::Vector2f coord)
 
 bool Projectile::getStatus()
 {
-    return busy;
+    return status;
 }
 
 void Projectile::setStatus(bool val)
 {
-    busy = val;
+    status = val;
 }
 
-void Projectile::setHitboxSize(sf::Vector2f hitboxSize)
+void Projectile::setTexture(const std::string path)
 {
-    hitbox.width = hitboxSize.x;
-    hitbox.height = hitboxSize.y;
-    hitboxShape.setSize(hitboxSize);
-}
-
-sf::Vector2f Projectile::getPosition() 
-{
-    return sprite.getPosition();
-}
-
-sf::RectangleShape Projectile::getHitboxShape()
-{
-    return hitboxShape;
+    sf::Texture* txtr = new sf::Texture;
+    txtr -> loadFromFile(path);
+    sprite.setTexture(*txtr);
 }
 
 void Projectile::drawProjectile(sf::RenderWindow &window)
