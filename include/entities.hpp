@@ -31,8 +31,8 @@ class Entity
         bool getStatus();
         void updateTexture(int val);
         void setStatus(bool status);
-        bool getFiredStatus();
-        void setFiredWeapon(bool val);
+        // bool getFiredStatus();
+        // void setFiredWeapon(bool val);
         void loadTexture(const std::string path);
         void setSpriteSize(sf::Vector2f objSize);
         void setSpritePosition(sf::Vector2f coord);

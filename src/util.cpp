@@ -57,7 +57,7 @@ void initAliens(int rows, int columns, std::vector<std::vector<Entity>*>* RefBlo
             alienObj -> setSpriteSize(sf::Vector2f(0.07, 0.07));           // Set alien size
             alienObj -> setHitboxSize(sf::Vector2f(50.0f, 50.0f));         // Set hitbox size
             alienObj -> setTexture(alienTexture);                          // Set alien texture
-            alienObj -> setFiredWeapon(false);                             // Aliens have not fired
+            //alienObj -> setFiredWeapon(false);                             // Aliens have not fired
             alienObj -> setStatus(ALIVE);                                  // Aliens are alive
             alienObj -> loadTexture(alienTexture2);
 

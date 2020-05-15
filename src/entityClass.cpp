@@ -58,15 +58,15 @@ sf::Vector2f Entity::getPosition()
     return sprite.getPosition();
 }
 
-void Entity::setFiredWeapon(bool val)
-{
-    firedWeapon = val;
-}
+// void Entity::setFiredWeapon(bool val)
+// {
+//     firedWeapon = val;
+// }
 
-bool Entity::getFiredStatus()
-{
-    return firedWeapon;
-}
+// bool Entity::getFiredStatus()
+// {
+//     return firedWeapon;
+// }
 
 void Entity::setStatus(bool status)
 {

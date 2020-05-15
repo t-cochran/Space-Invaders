@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
     std::vector<Projectile*> alienAmmo;
     std::vector<std::vector<Entity>*> alienRefBlock; 
     initAliens(ALIEN_ROWS, ALIEN_COLUMNS, &alienRefBlock, &alienAmmo,
-              "../Textures/alien.png", "../Textures/alienBullet.png", "../Textures/alien2.png");
+              "../Textures/alien.png", "../Textures/alienBullet4.png", "../Textures/alien2.png");
     
     /* Main game loop */
     while (window.isOpen())
@@ -131,72 +131,85 @@ int main(int argc, char* argv[])
         { 
             /* Select the alien's bullet for this column */
             bullet = alienAmmo[column];
+            float bullet_x = bullet -> getPosition().x;
+            float bullet_y = bullet -> getPosition().y;
+
+            /* Select the living alien at the bottom of the column */
             Entity* alien = NULL;
-
-            // if (bullet -> getPosition().y != alienRefBlock[column] -> front().getPosition().y + 30)
-            // {
-            //     bullet -> setSpritePosition(sf::Vector2f(bullet -> getPosition().x, bullet -> getPosition().y + ALIEN_BULLET_SPEED));
-            //     bullet -> setHitboxPosition(sf::Vector2f(bullet -> getPosition().x, bullet -> getPosition().y + ALIEN_BULLET_SPEED));
-
-            //     /* Draw the bullet */
-            //     bullet -> drawProjectile(window);
-            // }
-
-            /* LIVING ALIENS: Select a living alien at the bottom of the column */
             for (std::vector<Entity>::iterator it = alienRefBlock[column] -> begin();
                  it != alienRefBlock[column] -> end();
                  it++)
             {
-                /* Save the alien at the bottom of the column that is alive */
+                /* Complete the motion of active bullets until they are out of bounds */
+                if (bullet -> getStatus() == FIRED)
+                {   
+                    /* Increment the position of the bullet across the game screen */
+                    bullet -> setSpritePosition(sf::Vector2f(bullet_x, bullet_y + ALIEN_BULLET_SPEED));
+                    bullet -> setHitboxPosition(sf::Vector2f(bullet_x, bullet_y + ALIEN_BULLET_SPEED));
+                    
+                    /* Check if the bullet hits the player's spaceship */
+                    if (bullet -> getHitbox() -> intersects(*ship -> getHitbox()))
+                    {
+                        printf("GAME OVER!\n");
+                        explode.play();
+                        ship -> getSprite() -> setColor(sf::Color::Transparent);
+                    }
+
+                    /* Draw the bullet */
+                    bullet -> drawProjectile(window);
+                }
+
+                /* Reset the state of the bullet if it is out of bounds */
+                if (bullet -> getPosition().y >= Y_MAX)
+                {
+                    bullet -> setStatus(NOT_FIRED);
+                }
+
+                /* Get the living alien at the bottom of the column */
                 if (it -> getStatus() == ALIVE)
                 {
                     alien = &*it;
                 } 
             }
 
-            /* All aliens in this column are dead. Go-to the next column*/
-            if (alien == NULL) { continue; }
+            /* Go-to the next column if: 
+             *    (1) All aliens in the current column are dead
+             *                      - or -
+             *    (2) The bullet is already active and needs to go off screen
+             */
+            if (alien == NULL || bullet -> getStatus() == FIRED) { continue; }
 
-            /* Get the current (x,y)-position of the alien */
+
+            /*  Logic so-far:
+             *    (1) The bullet is not active yet
+             *    (2) The column has some alive aliens
+             *  
+             *  => Select a living alien at the bottom of the column to fire
+             */  
             float alien_x = alien -> getPosition().x;
             float alien_y = alien -> getPosition().y;
 
-            /* Get the current (x,y)-position of the bullet */
-            float bullet_x = bullet -> getPosition().x;
-            float bullet_y = bullet -> getPosition().y;
-
             /* Determine whether the alien should fire */
-            int randNum = rand() % 100;
-            if (randNum == 5 && alien -> getFiredStatus() == false) 
+            /* Alien fired! */
+            if (rand() % 100 == 5) 
             {
-                alien -> setFiredWeapon(true);
-            }
-
-            /* Bullet not fired or out of bounds: Set position to the alien's position */
-            if (bullet -> getPosition().y >= Y_MAX || alien -> getFiredStatus() == false)
-            {
-                alien -> setFiredWeapon(false);
-                bullet -> setSpritePosition(sf::Vector2f(alien_x + 30, alien_y + 30));
-                bullet -> setHitboxPosition(sf::Vector2f(alien_x + 30, alien_y + 30));
-            }
-            
-            /* Bullet fired */
-            else
-            {                
+                /* Update the state of the alien and the bullet */
+                bullet -> setStatus(FIRED);
+          
                 /* Increment the position of the bullet across the game screen */
                 bullet -> setSpritePosition(sf::Vector2f(bullet_x, bullet_y + ALIEN_BULLET_SPEED));
                 bullet -> setHitboxPosition(sf::Vector2f(bullet_x, bullet_y + ALIEN_BULLET_SPEED));
 
-                if (bullet -> getHitbox() -> intersects(*ship -> getHitbox()))
-                {
-                    printf("GAME OVER!\n");
-                    explode.play();
-                    ship -> getSprite() -> setColor(sf::Color::Transparent);
-                }
-
                 /* Draw the bullet */
-                bullet -> drawProjectile(window);
-            }            
+                bullet -> drawProjectile(window); 
+            }
+            /* Alien didn't fire */
+            else
+            {
+                /* Set the position of the bullet to the alien's */
+                bullet -> setSpritePosition(sf::Vector2f(alien_x + 30, alien_y + 30));
+                bullet -> setHitboxPosition(sf::Vector2f(alien_x + 30, alien_y + 30));
+            }         
         }
 
         /* Update player bullet positions */
