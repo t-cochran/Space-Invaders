@@ -1,1 +1,5 @@
+#  Ignore vscode workspace settings
 .vscode
+
+#  Ignore object files and temporary backup files
+*.o *~
