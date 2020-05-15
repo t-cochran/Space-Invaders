@@ -1,6 +1,6 @@
 # Space Invaders
 
-![Alt Text](https://i.imgur.com/93WEUqC.gif)
+![Alt Text](https://i.imgur.com/FN7C7il.gif)
 
 Goals of this project:
 1. Improve my C++
