@@ -22,7 +22,7 @@
 #define ALIEN_ROWS 4
 #define ALIEN_COLUMNS 8
 #define SHIP_AMMO     200
-#define VOLUME      20
+#define VOLUME      25
 #define ALIEN_SPEED  0.5f
 #define SEE_HITBOX  0
 
