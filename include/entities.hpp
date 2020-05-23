@@ -14,6 +14,7 @@
 class Entity
 {
     private:
+        int lives;
         bool status;
         sf::Texture* texture1;
         sf::Texture* texture2;
@@ -26,6 +27,8 @@ class Entity
         sf::Vector2f getPosition();
         sf::Sprite* getSprite() { return &sprite; }
         sf::FloatRect* getHitbox() { return &hitbox; }
+        void setLives(int num);
+        int getLives();
         bool getStatus();
         void setStatus(bool stat);
         void setSpriteSize(sf::Vector2f objSize);

@@ -1,4 +1,4 @@
-#include "util.hpp"
+#include "../include/projectiles.hpp"
 
 /* 
  *  Projectile class member functions

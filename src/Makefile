@@ -1,31 +1,42 @@
-#  include directory
+#  Header file directory
 IDIR =../include
 
-# the compiler: gcc for C program, define as g++ for C++
+# GNU g++ Compiler
 CC = g++
 
-# compiler flags:
+# Compiler Flags
 CFLAGS  = -c -g -O -Wall -I$(IDIR)
 
-#  SFML libraries
+#  Linked SFML libraries
 LIBS = -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
 
-# the build target executable:
-TARGET = main
+# Build main:
+all: main.o
+	$(CC) main.o util.o entities.o sounds.o projectiles.o -o main $(LIBS)
 
-all:
-	$(CC) $(CFLAGS) $(TARGET).cpp
-	$(CC) $(CFLAGS) entityClass.cpp
-	$(CC) $(CFLAGS) soundClass.cpp
-	$(CC) $(CFLAGS) projectileClass.cpp
+main.o: main.cpp util.o
+	$(CC) $(CFLAGS) main.cpp
+
+util.o: util.cpp entities.o sounds.o projectiles.o
 	$(CC) $(CFLAGS) util.cpp
-	$(CC) $(TARGET).o util.o entityClass.o soundClass.o projectileClass.o -o $(TARGET) $(LIBS)
 
+projectiles.o: projectiles.cpp
+	$(CC) $(CFLAGS) projectiles.cpp
+
+entities.o: entities.cpp
+	$(CC) $(CFLAGS) entities.cpp 
+
+sounds.o: sounds.cpp
+	$(CC) $(CFLAGS) sounds.cpp 
+
+#  Run game
 run:
-	./$(TARGET)
+	./main
 
-leak:
-	valgrind --leak-check=full ./$(TARGET) run
+#  Run main through valgrind
+memcheck:
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="leaks.txt" ./$(TARGET) run
 
+#  Cleanup
 clean:
 	rm -f $(TARGET) *.o *~ 

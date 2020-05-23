@@ -1,10 +1,19 @@
-#include "entities.hpp"
-#include "util.hpp"
+#include "../include/entities.hpp"
 
 /* 
  *  Entity class member functions
  */
 Entity::Entity() {}
+
+void Entity::setLives(int num)
+{
+    lives = num;
+}
+
+int Entity::getLives()
+{
+    return lives;
+}
 
 sf::Vector2f Entity::getPosition() 
 {

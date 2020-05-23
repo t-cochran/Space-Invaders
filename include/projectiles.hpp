@@ -12,7 +12,6 @@ class Projectile
 {
     private:
         bool status;
-        sf::Texture* texture;
         sf::Sprite sprite;
         sf::FloatRect hitbox;
         sf::RectangleShape hitboxShape;

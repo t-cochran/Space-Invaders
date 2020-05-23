@@ -1,4 +1,4 @@
-#include "sounds.hpp"
+#include "../include/sounds.hpp"
 
 /* 
  *  Sound class member functions

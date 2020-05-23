@@ -1,5 +1,5 @@
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <iostream>
 #include "entities.hpp"
@@ -22,9 +22,12 @@
 /* Entity Settings */
 #define DEAD                 0
 #define ALIVE                1
+#define RESPAWN              2
 #define ALIEN_ROWS           4
 #define ALIEN_COLUMNS        8
+#define SHIP_LIVES           3
 #define ALIEN_SPEED          0.5f
+#define SHIP_SPEED           5.0f
 
 /* View hitboxes on/off */
 #define SEE_HITBOX           0
@@ -35,18 +38,13 @@
 /* 
  *  Function prototypes
  */
-void 
-updateAmmoText(int ammoRemaining, sf::Text* displayedText, 
-               sf::Clock clock, sf::Color color);
-
 Entity* 
 initShip(sf::Vector2f spritePos,  sf::Vector2f hitboxPos, 
          sf::Vector2f spriteSize, sf::Vector2f hitboxSize, 
          const std::string shipTexture);
 
 sf::Text* 
-loadFont(const std::string path, sf::Font* font, 
-         sf::Vector2f scale, unsigned int size);
+loadFont(const std::string path, sf::Vector2f scale, unsigned int size);
 
 void 
 initAmmo(int numBullets, std::vector<Projectile*>* ammoVector, 
@@ -57,16 +55,6 @@ void
 initAliens(int rows, int columns, std::vector<std::vector<Entity>*>* RefBlock, 
            std::vector<Projectile*>* alienAmmo, const std::string alienTexture, 
            const std::string bulletTexture, const std::string alienTexture2);
-
-void 
-updateAlienPosition(std::vector<std::vector<Entity>*>* RefBlock, 
-                    sf::RenderWindow* scrn, bool* leftDir, 
-                    sf::Clock* clock, Sounds* move1, Sounds* move2);
-
-void 
-updateAlienBullets(Projectile* bullet, std::vector<Projectile*> alienAmmo, 
-                   std::vector<std::vector<Entity>*> refBlock, Entity* ship,
-                   Sounds* explode, sf::RenderWindow &window);
 
 void 
 updatePlayerBullets(Projectile* bullet, std::vector<Projectile*> shipAmmo, 

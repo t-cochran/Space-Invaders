@@ -2,7 +2,6 @@
 #define SOUNDS_H
 
 #include <SFML/Audio.hpp>
-#include <string>
 
 /* 
  *  Sounds Class
