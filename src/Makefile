@@ -35,8 +35,8 @@ run:
 
 #  Run main through valgrind
 memcheck:
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="leaks.txt" ./$(TARGET) run
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file="leaks.txt" ./main run
 
 #  Cleanup
 clean:
-	rm -f $(TARGET) *.o *~ 
+	rm -f main *.o *~ 
